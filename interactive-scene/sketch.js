@@ -1,10 +1,18 @@
-let userInterfacesActive = 0;
-let colourSlidersVisible = false;
+// slider stuff
 let sliderSize = 160;
 let sliders = [];
+
+// state variables
+let userInterfacesActive = 0;
+let activeTool = "brush";
+let colourSlidersVisible = false;
 let brushWidth = 10;
-let previousMouseX = 0;
-let previousMouseY = 0;
+
+// mouse position storage
+let timePreviousMouseX = 0;
+let timePreviousMouseY = 0;
+let dragOriginX;
+let dragOriginY;
 
 function setup() {
   createCanvas(400, 400);
@@ -34,33 +42,6 @@ function initializeSliders() {
   
 }
 
-function mousePressed() {
-  // fill(sliders[0].value(), sliders[1].value(), sliders[2].value())
-  // circle(mouseX, mouseY, brushWidth)
-}
-
-function mouseReleased() {
-  
-}
-
-function paintBrush() {
-  if (mouseIsPressed && userInterfacesActive === 0) {
-    stroke(sliders[0].value(), sliders[1].value(), sliders[2].value());
-    strokeWeight(brushWidth);
-    line(previousMouseX, previousMouseY, mouseX, mouseY);
-  }
-}
-
-function clearScreen() {
-  background(220);
-}
-
-function draw() {
-  paintBrush();
-  previousMouseX = mouseX;
-  previousMouseY = mouseY;
-}
-
 function changeColourSliderVisibility() {
   colourSlidersVisible = !colourSlidersVisible;
   
@@ -77,4 +58,57 @@ function changeColourSliderVisibility() {
     sliders[1].show();
     sliders[2].show();
   }
+
 }
+
+function mousePressed() {
+  dragOriginX = mouseX;
+  dragOriginY = mouseY;
+}
+
+function useActiveTool() {
+  if (activeTool === "rect") {
+    rect(dragOriginX, dragOriginY, mouseX - dragOriginX, mouseY - dragOriginY);
+  }
+  else if (activeTool === "circle") {
+    circle();
+  }
+  else if (activeTool === "line") {
+    line();
+  }
+  else if (activeTool === "square") {
+    
+  }
+  else if (activeTool === "paintbrush") {
+    
+  }
+  else if (activeTool === "paintbrush") {
+    
+  }
+  else if (activeTool === "paintbrush") {
+    
+  }
+  else {
+
+  }
+}
+
+function paintBrush() {
+  if (mouseIsPressed && activeTool === "brush") {
+    stroke(sliders[0].value(), sliders[1].value(), sliders[2].value());
+    strokeWeight(brushWidth);
+    line(timePreviousMouseX, timePreviousMouseY, mouseX, mouseY);
+  }
+}
+
+function clearScreen() {
+  background(220);
+}
+
+function draw() {
+  paintBrush();
+  timePreviousMouseX = mouseX;
+  timePreviousMouseY = mouseY;
+}
+
+
