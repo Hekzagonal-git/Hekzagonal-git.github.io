@@ -26,6 +26,10 @@ function setup() {
   let clearButton = createButton("Clear");
   clearButton.position(0, height + button.height);
   clearButton.mousePressed(clearScreen);
+
+  let toolCycleButton = createButton("Change Tool");
+  toolCycleButton.position(0, height + clearButton.height);
+  clearButton.mousePressed();
   
   initializeSliders();
   
@@ -66,30 +70,19 @@ function mousePressed() {
   dragOriginY = mouseY;
 }
 
+function mouseReleased() {
+  useActiveTool();
+}
+
 function useActiveTool() {
   if (activeTool === "rect") {
     rect(dragOriginX, dragOriginY, mouseX - dragOriginX, mouseY - dragOriginY);
   }
   else if (activeTool === "circle") {
-    circle();
+    circle(dragOriginX, dragOriginY, dist(mouseX, mouseY, dragOriginX, dragOriginY));
   }
   else if (activeTool === "line") {
-    line();
-  }
-  else if (activeTool === "square") {
-    
-  }
-  else if (activeTool === "paintbrush") {
-    
-  }
-  else if (activeTool === "paintbrush") {
-    
-  }
-  else if (activeTool === "paintbrush") {
-    
-  }
-  else {
-
+    line(dragOriginX. dragOriginY, mouseX, mouseY);
   }
 }
 
