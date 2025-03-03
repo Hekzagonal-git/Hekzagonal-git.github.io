@@ -4,9 +4,9 @@ let sliders = [];
 
 // state variables
 let userInterfacesActive = 0;
-let activeTool = "brush";
+let activeTool = 0;
 let colourSlidersVisible = false;
-let brushWidth = 10;
+let toolWidth = 10;
 
 // mouse position storage
 let timePreviousMouseX = 0;
@@ -14,25 +14,29 @@ let timePreviousMouseY = 0;
 let dragOriginX;
 let dragOriginY;
 
+let rectXUsed;
+let rectYUsed;
+
 function setup() {
   createCanvas(400, 400);
   background(220);
+
+  initializeSliders();
   
   // button
-  let button = createButton('Change Colour');
-  button.position(0, height);
-  button.mousePressed(changeColourSliderVisibility);
+  let colourButton = createButton('Change Colour');
+  colourButton.position(0, height);
+  colourButton.mousePressed(changeColourSliderVisibility);
   
   let clearButton = createButton("Clear");
-  clearButton.position(0, height + button.height);
+  clearButton.position(0, height + colourButton.height);
   clearButton.mousePressed(clearScreen);
 
   let toolCycleButton = createButton("Change Tool");
-  toolCycleButton.position(0, height + clearButton.height);
-  clearButton.mousePressed();
-  
-  initializeSliders();
-  
+  toolCycleButton.position(0, height + 2 * clearButton.height);
+  toolCycleButton.mousePressed(changeActiveTool);
+
+
 }
 
 function initializeSliders() {
@@ -71,25 +75,65 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  useActiveTool();
+  if (userInterfacesActive === 0) {
+    useActiveTool();
+  }
+}
+
+function mouseWheel(event) {
+  if (event.delta > 0) {
+    console.log(toolWidth);
+    toolWidth -= 0.5;
+  }
+  else {
+    console.log(toolWidth);
+    toolWidth += 0.5;
+  }
+
+  if (toolWidth <= 0) {
+    toolWidth = 63;
+  }
+  toolWidth = abs(toolWidth) % 64;
+}
+
+function changeActiveTool() {
+  activeTool = (activeTool + 1) % 4;
 }
 
 function useActiveTool() {
-  if (activeTool === "rect") {
-    rect(dragOriginX, dragOriginY, mouseX - dragOriginX, mouseY - dragOriginY);
+  fill(sliders[0].value(), sliders[1].value(), sliders[2].value());
+  stroke(sliders[0].value(), sliders[1].value(), sliders[2].value());
+  strokeWeight(toolWidth);
+
+  if (activeTool === 1) {
+    if (mouseX < dragOriginX) {
+      rectXUsed = mouseX;
+    }
+    else {
+      rectXUsed = dragOriginX;
+    }
+    if (mouseY < dragOriginY) {
+      rectYUsed = mouseY;
+    }
+    else {
+      rectYUsed = dragOriginY;
+    }
+
+    rect(rectXUsed, rectYUsed, mouseX - dragOriginX, mouseY - dragOriginY);
   }
-  else if (activeTool === "circle") {
-    circle(dragOriginX, dragOriginY, dist(mouseX, mouseY, dragOriginX, dragOriginY));
+  
+  else if (activeTool === 2) {
+    circle(dragOriginX, dragOriginY, 2 * dist(mouseX, mouseY, dragOriginX, dragOriginY));
   }
-  else if (activeTool === "line") {
-    line(dragOriginX. dragOriginY, mouseX, mouseY);
+  else if (activeTool === 3) {
+    line(dragOriginX, dragOriginY, mouseX, mouseY);
   }
 }
 
 function paintBrush() {
-  if (mouseIsPressed && activeTool === "brush") {
+  if (mouseIsPressed && activeTool === 0 && userInterfacesActive === 0) {
     stroke(sliders[0].value(), sliders[1].value(), sliders[2].value());
-    strokeWeight(brushWidth);
+    strokeWeight(toolWidth);
     line(timePreviousMouseX, timePreviousMouseY, mouseX, mouseY);
   }
 }
