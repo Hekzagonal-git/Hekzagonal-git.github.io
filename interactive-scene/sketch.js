@@ -1,6 +1,8 @@
-// slider stuff
+// colour interface
 let sliderSize = 160;
 let sliders = [];
+let textSize = 30;
+let texts = [];
 
 // state variables
 let userInterfacesActive = 0;
@@ -12,8 +14,8 @@ let toolWidth = 10;
 let timePreviousMouseX = 0;
 let timePreviousMouseY = 0;
 let dragOriginX;
-let dragOriginY;
 
+// variables for rectangle tool
 let rectXUsed;
 let rectYUsed;
 
@@ -22,18 +24,19 @@ function setup() {
   background(220);
 
   initializeSliders();
+  initializeTextInput();
   
   // button
   let colourButton = createButton('Change Colour');
   colourButton.position(0, height);
-  colourButton.mousePressed(changeColourSliderVisibility);
+  colourButton.mousePressed(changeColourInterfaceVisibility);
   
   let clearButton = createButton("Clear");
-  clearButton.position(0, height + colourButton.height);
+  clearButton.position(colourButton.x + colourButton.width, height);
   clearButton.mousePressed(clearScreen);
 
-  let toolCycleButton = createButton("Change Tool");
-  toolCycleButton.position(0, height + 2 * clearButton.height);
+  let toolCycleButton = createButton(`Change Tool`);
+  toolCycleButton.position(clearButton.x + clearButton.width, height);
   toolCycleButton.mousePressed(changeActiveTool);
 
 
@@ -41,16 +44,31 @@ function setup() {
 
 function initializeSliders() {
   
-  for (let i = 0; i <= 2; i++) {
+  for (let i = 0; i < 3; i++) {
     sliders[i] = createSlider(0, 255, 0, 0);
     sliders[i].size(sliderSize);
-    sliders[i].position(width / 2 - sliderSize / 2, height / 2 + (i - 1) * 30);
+    sliders[i].position(width - sliderSize, 20 + height + i * 30);
     sliders[i].hide();
   }
   
 }
 
-function changeColourSliderVisibility() {
+function initializeTextInput() {
+  for (let i = 0; i < 3; i++) {
+    texts[i] = createInput('', 'number');
+    texts[i].size(textSize);
+    texts[i].position(sliders[i].x - 1.5 * textSize, sliders[i].y);
+    texts[i].hide();
+
+    texts[i].changed();
+  }
+}
+
+function matchTextAndSliders() {
+  
+}
+
+function changeColourInterfaceVisibility() {
   colourSlidersVisible = !colourSlidersVisible;
   
   if (!colourSlidersVisible) {
@@ -58,6 +76,9 @@ function changeColourSliderVisibility() {
     sliders[0].hide();
     sliders[1].hide();
     sliders[2].hide();
+    texts[0].hide();
+    texts[1].hide();
+    texts[2].hide();
   }
   
   else {
@@ -65,6 +86,9 @@ function changeColourSliderVisibility() {
     sliders[0].show();
     sliders[1].show();
     sliders[2].show();
+    texts[0].show();
+    texts[1].show();
+    texts[2].show();
   }
 
 }
