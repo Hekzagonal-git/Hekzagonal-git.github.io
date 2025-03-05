@@ -1,8 +1,8 @@
 // colour interface
 let sliderSize = 160;
 let sliders = [];
-let textSize = 30;
-let texts = [];
+/* let textSize = 30;
+let texts = []; */
 
 // state variables
 let userInterfacesActive = 0;
@@ -19,12 +19,15 @@ let dragOriginX;
 let rectXUsed;
 let rectYUsed;
 
+let arrayToUpdate;
+let matchIndex;
+
 function setup() {
   createCanvas(400, 400);
   background(220);
 
   initializeSliders();
-  initializeTextInput();
+  // initializeTextInput();
   
   // button
   let colourButton = createButton('Change Colour');
@@ -49,10 +52,12 @@ function initializeSliders() {
     sliders[i].size(sliderSize);
     sliders[i].position(width - sliderSize, 20 + height + i * 30);
     sliders[i].hide();
+
+    // sliders[i].changed(matchTextToSliders);
   }
   
 }
-
+/*
 function initializeTextInput() {
   for (let i = 0; i < 3; i++) {
     texts[i] = createInput('', 'number');
@@ -60,13 +65,23 @@ function initializeTextInput() {
     texts[i].position(sliders[i].x - 1.5 * textSize, sliders[i].y);
     texts[i].hide();
 
-    texts[i].changed();
+    texts[i].changed(matchSlidersToText);
   }
 }
 
-function matchTextAndSliders() {
-  
+
+function matchSlidersToText() {
+  for (let i = 0; i < sliders.length; i++) {
+    sliders[i].value = texts[i].value;
+  }
 }
+
+function matchTextToSliders() {
+  for (let i = 0; i < texts.length; i++) {
+    texts[i].value = sliders[i].value;
+  }
+}
+*/
 
 function changeColourInterfaceVisibility() {
   colourSlidersVisible = !colourSlidersVisible;
@@ -76,9 +91,10 @@ function changeColourInterfaceVisibility() {
     sliders[0].hide();
     sliders[1].hide();
     sliders[2].hide();
+    /*
     texts[0].hide();
     texts[1].hide();
-    texts[2].hide();
+    texts[2].hide(); */
   }
   
   else {
@@ -86,9 +102,10 @@ function changeColourInterfaceVisibility() {
     sliders[0].show();
     sliders[1].show();
     sliders[2].show();
+    /*
     texts[0].show();
     texts[1].show();
-    texts[2].show();
+    texts[2].show(); */
   }
 
 }
