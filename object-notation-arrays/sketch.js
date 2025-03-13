@@ -6,26 +6,16 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-// up to 32 players can participate in up to 16 games at once
-let users = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
-let matches = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
 const MATRIX_WIDTH = 6;
 const MATRIX_HEIGHT = 6;
+let winner = Math.floor(Math.random() * 2);
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
-// Unused
-function createPlayer() {
-  let player = {
-    wins: 0,
-    playing: false,
-    spectating: false,
-    position: users.indexOf(0),
-  };
+function titleScreen() {
 
-  users[position] = player;
 }
 
 function createNewMatrix() {
@@ -41,30 +31,42 @@ function createNewMatrix() {
   return newMatrix;
 }
 
-class Match {
-  constructor(local = false, p1, p2) {
-    if (local) {
-      this.players = [p1, p2];
-      this.matrix = createNewMatrix();
-    }
-    else {
-
-    }
-  }
+function createNewMatch() {
+  let newMatch = {
+    matrix: createNewMatrix(),
+    turn: winner
+  };
+  return newMatch;
 }
 
-function createNewMatch(p1, p2, local = false) {
-  let newMatch = {
+function winDetection() {
+  for (let i = 0; i < MATRIX_HEIGHT; i++) {
+    for (let j = 0; j < MATRIX_WIDTH; j++) {
+      let origin = match.matrix[i][j];
+      // Column Detection
+      if (0 !== origin && origin === match.matrix[i + 1][j] && origin === match.matrix[i + 2][j] && origin === match.matrix[i][j]) {
 
-  };
-  if (local) {
-    newMatch.
-  }
-  else {
+      }
+      // Row Detection
+      else if (0 !== origin && origin === match.matrix[i][j + 1] && origin === match.matrix[i][j + 2] && origin === match.matrix[i][j + 3]) {
 
+      }
+      // Diagonal (Pos. Slope) Detection
+
+      // Diagonal (Neg. Slope) Detection
+    }
   }
 }
 
 function draw() {
-  background(220);
+  // background(220);
 }
+
+function drawFrame() {
+  // art
+}
+
+function drawPieces() {
+  // reads stuff from match
+}
+
