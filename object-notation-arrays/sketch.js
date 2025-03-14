@@ -8,6 +8,7 @@
 
 const MATRIX_WIDTH = 6;
 const MATRIX_HEIGHT = 6;
+const WIN_LENGTH = 4;
 let winner = Math.floor(Math.random() * 2);
 
 function setup() {
@@ -18,8 +19,11 @@ function titleScreen() {
 
 }
 
+
 function createNewMatrix() {
   let newMatrix = [];
+
+  // Game is stored as [row][column] rather than [column][row].
   for (let i = 0; i < MATRIX_WIDTH; i++) {
     let column = [];
     for (let j = 0; j < MATRIX_HEIGHT; j++) {
@@ -40,20 +44,65 @@ function createNewMatch() {
 }
 
 function winDetection() {
+  let doRows;
+  let doColumns;
+  // let doPositiveSlope;
+  let origin;
+
+  // Iterate through columns
   for (let i = 0; i < MATRIX_HEIGHT; i++) {
+    
+    // RangeError prevention
+    if (i + WIN_LENGTH - 1 > MATRIX_HEIGHT) {
+      doColumns = false;
+    }
+
+    // Iterate through rows
     for (let j = 0; j < MATRIX_WIDTH; j++) {
-      let origin = match.matrix[i][j];
-      // Column Detection
-      if (0 !== origin && origin === match.matrix[i + 1][j] && origin === match.matrix[i + 2][j] && origin === match.matrix[i][j]) {
+      
+      origin = match.matrix[i][j];
+      // Move onto next space if current is empty
+      if (origin === 0) {
+        break;
+      }
+
+      // RangeError prevention
+      if (j + WIN_LENGTH - 1 > MATRIX_WIDTH) {
+        doRows = false;
+      }
+
+      // Vertical win detection
+      if (doColumns) {
+        // Check for a series, length WIN_LENGTH, of values equal to that of the origin.
+        for (let k = 0; k < WIN_LENGTH - 1; k++) {
+          if (matrix[i + k][j] !== origin) {
+            break;
+          }
+          // If k is equal to WIN_LENGTH, then the game is won.
+          else if (k === WIN_LENGTH - 1) {
+            // win
+          }
+        }
+      }
+
+      // Horizontal win detection
+      if (doRows) {
+        // Check for a series, length WIN_LENGTH, of values equal to that of the origin.
+        for (let k = 0; k < WIN_LENGTH - 1; k++) {
+          if (matrix[i][j + k] !== origin) {
+            break;
+          }
+          // If k is equal to WIN_LENGTH, then the game is won.
+          else if (k === WIN_LENGTH - 1) {
+            // win
+          }
+        }
+      }
+
+      // Diagonal (Negative Slope) win detection
+      if (doColumns && doRows) {
 
       }
-      // Row Detection
-      else if (0 !== origin && origin === match.matrix[i][j + 1] && origin === match.matrix[i][j + 2] && origin === match.matrix[i][j + 3]) {
-
-      }
-      // Diagonal (Pos. Slope) Detection
-
-      // Diagonal (Neg. Slope) Detection
     }
   }
 }
@@ -69,4 +118,3 @@ function drawFrame() {
 function drawPieces() {
   // reads stuff from match
 }
-
