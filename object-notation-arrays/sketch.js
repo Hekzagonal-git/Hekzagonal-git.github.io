@@ -11,31 +11,36 @@ const WIN_LENGTH = 4;
 const GAME_WIDTH = 7;
 const GAME_HEIGHT = 6;
 
-// Graphics constants
-const BOARD_LEFT = 0;
-const BOARD_TOP = 0;
-const BOARD_HEIGHT = 200;
-const BOARD_WIDTH = 200;
-const SLOT_MARGIN = 0;
+// Board
+const BOARD = {
+  left: 0,
+  top: 0,
+  height: 200,
+  width: 200,
+};
+
+const EMPTY_SLOT_COLOUR = [255, 255, 255];
+const COLOURS = [EMPTY_SLOT_COLOUR, [255, 0, 0], [0, 0, 255],];
 
 // Board
 let columnXBoundaries;
-let chipSlotDiameter;
+let chipDiameter;
+let activeMatch;
+let active;
 
-
+// Program setup
 function setup() {
+  createNewMatch();
+  determineBoardLayout();
 
+  active = true;
 }
 
-function draw() {
-
-}
-
+// Match Setup
 function createNewMatch() {
   let match = {
     matrix: createNewMatrix(),
     turn: Math.floor(Math.random() * 2),
-
   };
   return match;
 }
@@ -54,21 +59,47 @@ function createNewMatrix() {
   return newMatrix;
 }
 
-// Currently a MESS
-function determineBoundaries() {
-  // Based on the game width, finds the diameter of one chip slot.
-  // Then, creates a 2D array where each row contains one minimum/maximum X Coordinate pairing for the board's columns
-  chipSlotDiameter = (BOARD_WIDTH / GAME_WIDTH - (SLOT_MARGIN + SLOT_MARGIN / GAME_WIDTH));
-  columnXBoundaries = [];
-  
-  for (let j = 0; j < GAME_WIDTH; j++) {
-
-    // Left X Boundary for a column
-    let x1 = j * (chipSlotDiameter + SLOT_MARGIN) + SLOT_MARGIN;
-    let x2 = x1 + chipSlotDiameter;
-
-    columnXBoundaries.push([x1, x2]);
+function determineBoardLayout() {
+  // Chip Diameter
+  if (GAME_HEIGHT > GAME_WIDTH) {
+    chipDiameter = 0.9 * BOARD.height / GAME_HEIGHT;
   }
+  else {
+    chipDiameter = 0.9 * BOARD.width / GAME_WIDTH;
+  }
+
+  // Mouse Click Areas
+  for (let i = 0; i < GAME_WIDTH; i++) {
+    columnXBoundaries.push(i * BOARD.width / GAME_WIDTH);
+  }
+}
+
+// Game Loop
+function mousePressed(arr) {
+  if (active) {
+    for (let i = 0; i < GAME_WIDTH; i++) {
+      if (mouseX > columnXBoundaries[i] && mouseX < columnXBoundaries[i + 1]) {
+        let y = dropChip(activeMatch.matrix, i);
+        if (y !== -1) {
+          arr[y][i] = activeMatch.turn + 1;
+          activeMatch.turn = (activeMatch.turn + 1) % activeMatch.players;
+          break;
+        }
+        else {
+          // You can't do that!! or something
+        }
+      }
+    }
+  }
+}
+
+function dropChip(arr, x) {
+  for (let y = 0; y < GAME_HEIGHT; y++) {
+    if (arr[y][x] === 0) {
+      return y;
+    }
+  }
+  return -1;
 }
 
 function winDetect(arr, originX, originY) {
@@ -123,7 +154,7 @@ function winDetect(arr, originX, originY) {
     let currentY = originY - (WIN_LENGTH - 1) + i;
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
-    if ((currentY >= 0 && currentY <= GAME_HEIGHT) && (currentX >= 0 && currentX <= GAME_WIDTH) && arr[currentY][currentX] === origin) {
+    if (currentY >= 0 && currentY <= GAME_HEIGHT && (currentX >= 0 && currentX <= GAME_WIDTH) && arr[currentY][currentX] === origin) {
       chipsInARow += 1;
     }
     else {
@@ -143,7 +174,7 @@ function winDetect(arr, originX, originY) {
     let currentY = originY - (WIN_LENGTH - 1) + i;
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
-    if ((currentY >= 0 && currentY <= GAME_HEIGHT) && (currentX >= 0 && currentX <= GAME_WIDTH) && arr[currentY][currentX] === origin) {
+    if (currentY >= 0 && currentY <= GAME_HEIGHT && (currentX >= 0 && currentX <= GAME_WIDTH) && arr[currentY][currentX] === origin) {
       chipsInARow += 1;
     }
     else {
@@ -157,26 +188,37 @@ function winDetect(arr, originX, originY) {
     }
   }
 
-}
-
-function dropChip(arr, x) {
-  for (let y = arr.length - 1; y > 0; y--) {
-    if (arr[y][x] === 0) {
-      return y;
-    }
+  // Tie Detection
+  if (!(0 in arr)) {
+    // tie
   }
-  return -1;
+
 }
 
-// Currently unfinished and also a MESS
-function drawChips() {
+function endGame(winner) {
+  if (winner === -1) {
+
+  }
+  else {
+    
+  }
+}
+
+// Graphics (note: spread operator (...) may be unreliable?)
+function drawChips(arr) {
   let y;
   let x;
 
   for (let i = 0; i < GAME_HEIGHT; i++) {
-    y = (i + 0.5) * (BOARD_HEIGHT / GAME_HEIGHT);
+    y = (i + 0.5) * (BOARD.height / GAME_HEIGHT);
     for (let j = 0; j < GAME_WIDTH; j++) {
-      x = (j + 0.5) * (BOARD_WIDTH / GAME_WIDTH); 
+      x = (j + 0.5) * (BOARD.width / GAME_WIDTH);
+      fill(...COLOURS[arr[i][j]]);
+      circle(x, y, chipDiameter);
     }
   }
+}
+
+function draw() {
+
 }
