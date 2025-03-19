@@ -8,33 +8,39 @@
 
 // Gameplay constants
 const WIN_LENGTH = 4;
-const GAME_WIDTH = 7;
+const GAME_WIDTH = 10;
 const GAME_HEIGHT = 6;
 
 // Board
-const BOARD = {
+let BOARD = {
   left: 0,
   top: 0,
   height: 200,
   width: 200,
 };
 
-const EMPTY_SLOT_COLOUR = [0, 255, 255];
+const EMPTY_SLOT_COLOUR = [255, 255, 255];
+const BOARD_COLOUR = [10, 10, 90];
 const COLOURS = [EMPTY_SLOT_COLOUR, [255, 0, 0], [0, 0, 255],];
 
 // Board
 let columnXBoundaries = [];
 let chipDiameter;
+let zoom;
+
+// Game
 let activeMatch;
 let active;
 
 // Program setup
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  background(0);
+  zoom = determineZoom();
+  createCanvas(zoom * BOARD.width, zoom * BOARD.height);
+  background(30);
   activeMatch = createNewMatch();
   determineBoardLayout();
 
+  zoom = determineZoom();
   active = true;
 }
 
@@ -62,6 +68,17 @@ function createNewMatrix() {
   return newMatrix;
 }
 
+function determineZoom() {
+  if (windowWidth < windowHeight) {
+    let zoom = 0.9 * windowWidth / BOARD.width;
+    return zoom;
+  }
+  else {
+    let zoom = 0.9 * windowHeight / BOARD.height;
+    return zoom;
+  }
+}
+
 function determineBoardLayout() {
   // Chip Diameter
   if (GAME_HEIGHT > GAME_WIDTH) {
@@ -81,7 +98,7 @@ function determineBoardLayout() {
 function mousePressed() {
   if (active) {
     for (let i = 0; i < GAME_WIDTH; i++) {
-      if (mouseX > columnXBoundaries[i] && mouseX < columnXBoundaries[i + 1]) {
+      if (mouseX > zoom * columnXBoundaries[i] && mouseX < zoom * columnXBoundaries[i + 1]) {
         let y = dropChip(activeMatch.matrix, i);
         if (y !== -1) {
           activeMatch.matrix[y][i] = activeMatch.turn + 1;
@@ -109,6 +126,7 @@ function dropChip(arr, x) {
 function winDetect(arr, originX, originY) {
   let origin = arr[originY][originX];
   let chipsInARow = 0;
+  let fullRows = 0;
 
   if (origin === 0) {
     return -1;
@@ -116,11 +134,13 @@ function winDetect(arr, originX, originY) {
 
   // Horizontal Win Detection
   chipsInARow = 0;
-  for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
+  for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentX = originX - (WIN_LENGTH - 1) + i;
+    console.log("Horiz win current X:" + currentX);
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentX >= 0 && currentX < GAME_WIDTH && arr[originY][currentX] === origin) {
+      console.log("horiz win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -137,12 +157,12 @@ function winDetect(arr, originX, originY) {
 
   // Vertical Win Detection
   chipsInARow = 0;
-  for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
+  for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentY = originY - (WIN_LENGTH - 1) + i;
-    console.log(currentY);
+    console.log("Vert win current Y:" + currentY);
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentY >= 0 && currentY < GAME_HEIGHT && arr[currentY][originX] === origin) {
-      console.log("vert win check chips += 1");
+      console.log("vert win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -159,12 +179,16 @@ function winDetect(arr, originX, originY) {
 
   // Diagonal (Positive Slope) Win Detection
   chipsInARow = 0;
-  for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
+  for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentX = originX - (WIN_LENGTH - 1) + i;
     let currentY = originY - (WIN_LENGTH - 1) + i;
+    console.log("Pos Diag win current X:" + currentX);
+    console.log("Pos Diag win current Y:" + currentY);
+
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentY >= 0 && currentY < GAME_HEIGHT && (currentX >= 0 && currentX < GAME_WIDTH) && arr[currentY][currentX] === origin) {
+      console.log("positive slope win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -181,12 +205,15 @@ function winDetect(arr, originX, originY) {
 
   // Diagonal (Negative Slope) Win Detection
   chipsInARow = 0;
-  for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
+  for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentX = originX + (WIN_LENGTH - 1) - i;
     let currentY = originY - (WIN_LENGTH - 1) + i;
+    console.log("Neg Diag win current X:" + currentX);
+    console.log("Neg Diag win current Y:" + currentY);
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentY >= 0 && currentY < GAME_HEIGHT && (currentX >= 0 && currentX < GAME_WIDTH) && arr[currentY][currentX] === origin) {
+      console.log("diag negative slope win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -202,7 +229,16 @@ function winDetect(arr, originX, originY) {
   }
 
   // Tie Detection
-  if (!(0 in arr)) {
+  fullRows = 0;
+  for (let i = 0; i < GAME_HEIGHT; i++) {
+    if (arr[i].indexOf(0) === -1) {
+      fullRows += 1;
+    }
+    else {
+      break;
+    }
+  }
+  if (fullRows === GAME_HEIGHT) {
     endGame(-1);
   }
 
@@ -214,14 +250,14 @@ function endGame(winner) {
   fill(255);
 
   if (winner === -1) {
-    text("Tie", 0, 0);
+    text("Tie", 100, 100);
   }
   else {
-    text("Victory!", 0, 0);
+    text("Victory!", 100, 100);
   }
 }
 
-// Graphics (note: spread operator (...) may be unreliable?)
+// Graphics
 function drawChips(arr) {
   let y;
   let x;
@@ -231,11 +267,17 @@ function drawChips(arr) {
     for (let j = 0; j < GAME_WIDTH; j++) {
       x = (j + 0.5) * (BOARD.width / GAME_WIDTH);
       fill(...COLOURS[arr[i][j]]);
-      circle(x, y, chipDiameter);
+      circle(zoom * (BOARD.left + x), zoom * (BOARD.top + y), zoom * chipDiameter);
     }
   }
 }
 
+function drawBoard(arr) {
+  fill(BOARD_COLOUR);
+  rect(zoom * BOARD.left, zoom * BOARD.top, zoom * BOARD.width, zoom * BOARD.height);
+}
+
 function draw() {
+  drawBoard(activeMatch.matrix);
   drawChips(activeMatch.matrix);
 }
