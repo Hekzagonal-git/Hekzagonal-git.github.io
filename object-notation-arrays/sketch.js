@@ -86,7 +86,7 @@ function mousePressed() {
         if (y !== -1) {
           activeMatch.matrix[y][i] = activeMatch.turn + 1;
           activeMatch.turn = (activeMatch.turn + 1) % activeMatch.players;
-          winDetect(activeMatch.matrix, x, y);
+          winDetect(activeMatch.matrix, i, y);
           break;
         }
         else {
@@ -115,11 +115,12 @@ function winDetect(arr, originX, originY) {
   }
 
   // Horizontal Win Detection
+  chipsInARow = 0;
   for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
     let currentX = originX - (WIN_LENGTH - 1) + i;
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
-    if (currentX >= 0 && currentX <= GAME_WIDTH && arr[originY][currentX] === origin) {
+    if (currentX >= 0 && currentX < GAME_WIDTH && arr[originY][currentX] === origin) {
       chipsInARow += 1;
     }
     else {
@@ -128,17 +129,20 @@ function winDetect(arr, originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      // return something meaning a win
+      console.log("horiz win");
+      endGame(origin);
       break;
     }
   }
 
   // Vertical Win Detection
+  chipsInARow = 0;
   for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
     let currentY = originY - (WIN_LENGTH - 1) + i;
-
+    console.log(currentY);
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
-    if (currentY >= 0 && currentY <= GAME_HEIGHT && arr[currentY][originX] === origin) {
+    if (currentY >= 0 && currentY < GAME_HEIGHT && arr[currentY][originX] === origin) {
+      console.log("vert win check chips += 1");
       chipsInARow += 1;
     }
     else {
@@ -147,18 +151,20 @@ function winDetect(arr, originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      // return something meaning a win
+      console.log("vert win");
+      endGame(origin);
       break;
     }
   }
 
   // Diagonal (Positive Slope) Win Detection
+  chipsInARow = 0;
   for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
     let currentX = originX - (WIN_LENGTH - 1) + i;
     let currentY = originY - (WIN_LENGTH - 1) + i;
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
-    if (currentY >= 0 && currentY <= GAME_HEIGHT && (currentX >= 0 && currentX <= GAME_WIDTH) && arr[currentY][currentX] === origin) {
+    if (currentY >= 0 && currentY < GAME_HEIGHT && (currentX >= 0 && currentX < GAME_WIDTH) && arr[currentY][currentX] === origin) {
       chipsInARow += 1;
     }
     else {
@@ -167,18 +173,20 @@ function winDetect(arr, originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      // return something meaning a win
+      console.log("diag win pos");
+      endGame(origin);
       break;
     }
   }
 
   // Diagonal (Negative Slope) Win Detection
+  chipsInARow = 0;
   for (let i = 0; i < (WIN_LENGTH - 1) * 2; i++) {
     let currentX = originX + (WIN_LENGTH - 1) - i;
     let currentY = originY - (WIN_LENGTH - 1) + i;
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
-    if (currentY >= 0 && currentY <= GAME_HEIGHT && (currentX >= 0 && currentX <= GAME_WIDTH) && arr[currentY][currentX] === origin) {
+    if (currentY >= 0 && currentY < GAME_HEIGHT && (currentX >= 0 && currentX < GAME_WIDTH) && arr[currentY][currentX] === origin) {
       chipsInARow += 1;
     }
     else {
@@ -187,26 +195,31 @@ function winDetect(arr, originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      // return something meaning a win
+      console.log("diag win neg");
+      endGame(origin);
       break;
     }
   }
 
   // Tie Detection
   if (!(0 in arr)) {
+    endGame(-1);
   }
 
 }
 
-/* function endGame(winner) {
-  if (winner === -1) {
+function endGame(winner) {
+  console.log("game ended");
+  active = 0;
+  fill(255);
 
+  if (winner === -1) {
+    text("Tie", 0, 0);
   }
   else {
-    
+    text("Victory!", 0, 0);
   }
 }
-  */
 
 // Graphics (note: spread operator (...) may be unreliable?)
 function drawChips(arr) {
