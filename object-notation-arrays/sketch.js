@@ -19,18 +19,20 @@ const BOARD = {
   width: 200,
 };
 
-const EMPTY_SLOT_COLOUR = [255, 255, 255];
+const EMPTY_SLOT_COLOUR = [0, 255, 255];
 const COLOURS = [EMPTY_SLOT_COLOUR, [255, 0, 0], [0, 0, 255],];
 
 // Board
-let columnXBoundaries;
+let columnXBoundaries = [];
 let chipDiameter;
 let activeMatch;
 let active;
 
 // Program setup
 function setup() {
-  createNewMatch();
+  createCanvas(windowWidth, windowHeight);
+  background(0);
+  activeMatch = createNewMatch();
   determineBoardLayout();
 
   active = true;
@@ -41,6 +43,7 @@ function createNewMatch() {
   let match = {
     matrix: createNewMatrix(),
     turn: Math.floor(Math.random() * 2),
+    players: 2,
   };
   return match;
 }
@@ -48,9 +51,9 @@ function createNewMatch() {
 function createNewMatrix() {
   let newMatrix = [];
 
-  for (let i = 0; i < MATRIX_HEIGHT; i++) {
+  for (let i = 0; i < GAME_HEIGHT; i++) {
     let row = [];
-    for (let j = 0; j < MATRIX_WIDTH; j++) {
+    for (let j = 0; j < GAME_WIDTH; j++) {
       row.push(0);
     }
     newMatrix.push(row);
@@ -69,20 +72,21 @@ function determineBoardLayout() {
   }
 
   // Mouse Click Areas
-  for (let i = 0; i < GAME_WIDTH; i++) {
-    columnXBoundaries.push(i * BOARD.width / GAME_WIDTH);
+  for (let i = 0; i < GAME_WIDTH + 1; i++) {
+    columnXBoundaries.push(i * (BOARD.width / GAME_WIDTH));
   }
 }
 
 // Game Loop
-function mousePressed(arr) {
+function mousePressed() {
   if (active) {
     for (let i = 0; i < GAME_WIDTH; i++) {
       if (mouseX > columnXBoundaries[i] && mouseX < columnXBoundaries[i + 1]) {
         let y = dropChip(activeMatch.matrix, i);
         if (y !== -1) {
-          arr[y][i] = activeMatch.turn + 1;
+          activeMatch.matrix[y][i] = activeMatch.turn + 1;
           activeMatch.turn = (activeMatch.turn + 1) % activeMatch.players;
+          winDetect(activeMatch.matrix, x, y);
           break;
         }
         else {
@@ -94,7 +98,7 @@ function mousePressed(arr) {
 }
 
 function dropChip(arr, x) {
-  for (let y = 0; y < GAME_HEIGHT; y++) {
+  for (let y = GAME_HEIGHT - 1; y >= 0; y -= 1) {
     if (arr[y][x] === 0) {
       return y;
     }
@@ -190,12 +194,11 @@ function winDetect(arr, originX, originY) {
 
   // Tie Detection
   if (!(0 in arr)) {
-    // tie
   }
 
 }
 
-function endGame(winner) {
+/* function endGame(winner) {
   if (winner === -1) {
 
   }
@@ -203,6 +206,7 @@ function endGame(winner) {
     
   }
 }
+  */
 
 // Graphics (note: spread operator (...) may be unreliable?)
 function drawChips(arr) {
@@ -220,5 +224,5 @@ function drawChips(arr) {
 }
 
 function draw() {
-
+  drawChips(activeMatch.matrix);
 }
