@@ -34,7 +34,6 @@ let activeMatch;
 let active;
 let onTitleScreen;
 
-let displayingMessage = true;
 let winner;
 
 // Program setup
@@ -43,6 +42,7 @@ function setup() {
   createCanvas(zoom * BOARD.width, zoom * BOARD.height);
   background(...COLOURS.backgroundColour);
 
+  // Temporary - Match Creation
   activeMatch = createNewMatch();
   active = true;
 }
@@ -59,9 +59,8 @@ function determineZoom() {
 }
 
 // Title screen
-function titleScreen() {
-  onTitleScreen = true;
-
+function createTitleScreen() {
+  // the title screen. ughhhhh
 }
 
 // Match Setup
