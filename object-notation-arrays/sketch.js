@@ -7,10 +7,10 @@
 // - Utilized 2D Arrays, spread (...) operator,
 
 // Gameplay constants
-const WIN_LENGTH = 1;
-const GAME_WIDTH = 1;
-const GAME_HEIGHT = 1;
-const PLAYER_COUNT = 1; // Max of 5 currently
+const WIN_LENGTH = 4;
+const GAME_WIDTH = 7;
+const GAME_HEIGHT = 6;
+const PLAYER_COUNT = 2; // Max of 5 currently
 
 const BOARD = {
   left: 0,
@@ -23,7 +23,7 @@ const COLOURS = {
   backgroundColour: [38, 43, 49],
   boardColour: [10, 10, 90],
   chipColours: [[225, 225, 225], [255, 0, 0], [0, 0, 255], [0, 255, 0], [255, 255, 0], [255, 0, 255], [0, 255, 255]], // 0th item is the colour of an empty slot
-}
+};
 
 // non-constant board variables
 let chipDiameter;
@@ -33,6 +33,9 @@ let zoom;
 let activeMatch;
 let active;
 let onTitleScreen;
+
+let displayingMessage = true;
+let winner;
 
 // Program setup
 function setup() {
@@ -75,6 +78,12 @@ function createNewMatch() {
   return match;
 }
 
+function resetMatch() {
+  activeMatch = createNewMatch();
+  winner = undefined;
+  active = true;
+}
+
 function createNewMatrix() {
   let newMatrix = [];
 
@@ -94,7 +103,7 @@ function determineClickAreas() {
   for (let i = 0; i < GAME_WIDTH + 1; i++) {
     newClickAreas.push(i * (BOARD.width / GAME_WIDTH));
   }
-  return(newClickAreas);
+  return newClickAreas;
 }
 
 function determineChipDiameter() {
@@ -165,7 +174,7 @@ function winDetect(originX, originY) {
     if (chipsInARow === WIN_LENGTH) {
       console.log("horiz win");
       endGame(origin);
-      break;
+      return 0;
     }
   }
 
@@ -187,7 +196,7 @@ function winDetect(originX, originY) {
     if (chipsInARow === WIN_LENGTH) {
       console.log("vert win");
       endGame(origin);
-      break;
+      return 0;
     }
   }
 
@@ -213,7 +222,7 @@ function winDetect(originX, originY) {
     if (chipsInARow === WIN_LENGTH) {
       console.log("diag win pos");
       endGame(origin);
-      break;
+      return 0;
     }
   }
 
@@ -238,7 +247,7 @@ function winDetect(originX, originY) {
     if (chipsInARow === WIN_LENGTH) {
       console.log("diag win neg");
       endGame(origin);
-      break;
+      return 0;
     }
   }
 
@@ -254,59 +263,74 @@ function winDetect(originX, originY) {
   }
   if (fullRows === GAME_HEIGHT) {
     endGame(-1);
+    return 0;
   }
 
 }
 
-function endGame(winner) {
-  console.log("game ended");
-  active = 0;
-  fill(1, 1, 255);
-  textSize(20);
-
-  if (winner === -1) {
-    text("Tie", 100, 100);
-  }
-  else {
-    text("Victory!", 100, 100);
-  }
+function endGame(the) {
+  // console.log("game ended");
+  active = false;
+  winner = the;
 }
 
 // Graphics
 function displayChips() {
   let y;
   let x;
+  stroke(0);
+  strokeWeight(4);
 
   for (let i = 0; i < GAME_HEIGHT; i++) {
     y = (i + 0.5) * (BOARD.height / GAME_HEIGHT);
     for (let j = 0; j < GAME_WIDTH; j++) {
       x = (j + 0.5) * (BOARD.width / GAME_WIDTH);
-      fill(...(COLOURS.chipColours[activeMatch.matrix[i][j]]));
+      fill(...COLOURS.chipColours[activeMatch.matrix[i][j]]);
       circle(zoom * (BOARD.left + x), zoom * (BOARD.top + y), zoom * activeMatch.chipDiameter);
     }
   }
 }
 
 function displayBoard() {
+  noStroke();
   fill(COLOURS.boardColour);
   rect(zoom * BOARD.left, zoom * BOARD.top, zoom * BOARD.width, zoom * BOARD.height, zoom * 10);
 }
 
-function displayMessage() {
+function displayWinner() {
+  noStroke();
+  fill(COLOURS.backgroundColour);
+  rect(zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20, zoom * 3);
+  formatText();
+  if (winner === -1) {
+    text("It's a Tie!", zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20);
+  }
+  else {
+    text("Player " + winner + " wins!", zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20);
+  }
+}
 
+function formatText() {
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  fill(190);
+  stroke(0);
+  strokeWeight(3);
 }
 
 function displayGameTitle() {
   fill(0);
   textAlign(CENTER, CENTER);
-  textSize(zoom * 10)
+  textSize(zoom * 10);
   text("Connect", zoom * BOARD.width / 2, zoom * 0.1 * BOARD.height,);
 }
 
 // Draw loop
 function draw() {
-  background(COLOURS.backgroundColour);
+  // background(COLOURS.backgroundColour);
   displayBoard(activeMatch.matrix);
   displayChips(activeMatch.matrix);
-  // displayGameTitle();
+  if (!active && !onTitleScreen) {
+    displayWinner();
+  }
 }
