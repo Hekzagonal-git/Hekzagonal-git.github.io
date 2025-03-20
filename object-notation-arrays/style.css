@@ -1,9 +1,11 @@
 html, body {
   margin: 0;
   padding: 0;
+  background-color:rgb(38, 43, 49);
 }
 
 canvas {
   display: block;
   margin: auto;
+  background-color:rgb(38, 43, 49);
 }
