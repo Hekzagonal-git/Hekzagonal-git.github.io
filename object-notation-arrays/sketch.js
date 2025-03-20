@@ -4,13 +4,13 @@
 // 3/19/2025
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// - Utilized 2D Arrays, spread (...) operator,
 
 // Gameplay constants
-const WIN_LENGTH = 2;
-const GAME_WIDTH = 8;
+const WIN_LENGTH = 1;
+const GAME_WIDTH = 1;
 const GAME_HEIGHT = 1;
-const PLAYER_COUNT = 5; // Max of 5 currently
+const PLAYER_COUNT = 1; // Max of 5 currently
 
 const BOARD = {
   left: 0,
@@ -65,7 +65,7 @@ function titleScreen() {
 function createNewMatch() {
   let match = {
     matrix: createNewMatrix(),
-    turn: Math.floor(Math.random() * 2),
+    turn: Math.floor(Math.random() * PLAYER_COUNT),
     players: PLAYER_COUNT,
 
     clickAreas: determineClickAreas(),
