@@ -4,13 +4,13 @@
 // 3/19/2025
 //
 // Extra for Experts:
-// - Utilized 2D Arrays, spread (...) operator,
+// - Heavily utilized 2D Arrays, spread (...) operator, some other things not directly taught like prompt().
 
 // Gameplay constants
-const WIN_LENGTH = 4;
-const GAME_WIDTH = 7;
-const GAME_HEIGHT = 6;
-const PLAYER_COUNT = 2; // Max of 5 currently
+let WIN_LENGTH = 4;
+let GAME_WIDTH = 7;
+let GAME_HEIGHT = 6;
+let PLAYER_COUNT = 2;
 
 const BOARD = {
   left: 0,
@@ -19,32 +19,35 @@ const BOARD = {
   width: 200,
 };
 
-const COLOURS = {
+let colours = {
   backgroundColour: [38, 43, 49],
   boardColour: [10, 10, 90],
   chipColours: [[225, 225, 225], [255, 0, 0], [0, 0, 255], [0, 255, 0], [255, 255, 0], [255, 0, 255], [0, 255, 255]], // 0th item is the colour of an empty slot
 };
 
-// non-constant board variables
-let chipDiameter;
+// accounts for different display sizes
 let zoom;
 
 // Game State variables
 let activeMatch;
-let active;
 let onTitleScreen;
-
-let winner;
 
 // Program setup
 function setup() {
   zoom = determineZoom();
   createCanvas(zoom * BOARD.width, zoom * BOARD.height);
-  background(...COLOURS.backgroundColour);
+  background(...colours.backgroundColour);
+
+  let settingsButton = createButton("Change Game Settings");
+  settingsButton.position(BOARD.left + 0, zoom * (BOARD.height + BOARD.top))
+  settingsButton.mousePressed(changeGameValues);
+
+  let resetButton = createButton("Reset Game");
+  resetButton.position(BOARD.left + settingsButton.width, zoom * (BOARD.height + BOARD.top));
+  resetButton.mousePressed(createNewMatch);
 
   // Temporary - Match Creation
-  activeMatch = createNewMatch();
-  active = true;
+  createNewMatch();
 }
 
 function determineZoom() {
@@ -58,29 +61,42 @@ function determineZoom() {
   }
 }
 
-// Title screen
-function createTitleScreen() {
-  // the title screen. ughhhhh
+// Match Setup
+function changeGameValues() {
+  let test = [0, 0, 0, 0];
+
+  while (true) {
+    test = [Number(prompt("Connect: ")), Number(prompt("Width: ")), Number(prompt("Height: ")), Number(prompt("Players: "))];
+    if (test.indexOf(0) === -1) {
+      WIN_LENGTH = test[0];
+      GAME_WIDTH = test[1];
+      GAME_HEIGHT = test[2];
+      PLAYER_COUNT = test[3];
+      createNewMatch();
+      break;
+    }
+    else {
+      alert("Invalid input! All values must be over zero.");
+    }
+  }
+
 }
 
-// Match Setup
 function createNewMatch() {
   let match = {
     matrix: createNewMatrix(),
     turn: Math.floor(Math.random() * PLAYER_COUNT),
     players: PLAYER_COUNT,
+    winner: undefined,
 
     clickAreas: determineClickAreas(),
     chipDiameter: determineChipDiameter(),
 
-  };
-  return match;
-}
+    active: true,
 
-function resetMatch() {
-  activeMatch = createNewMatch();
-  winner = undefined;
-  active = true;
+  };
+  activeMatch = match;
+  createNecessaryChipColours();
 }
 
 function createNewMatrix() {
@@ -116,9 +132,16 @@ function determineChipDiameter() {
   return newChipDiameter;
 }
 
+function createNecessaryChipColours() {
+  // Ensures that there are as many potential chip colours as there are players.
+  while (activeMatch.players > colours.chipColours.length - 1) {
+    colours.chipColours.push([Math.random() * 256, Math.random() * 256, Math.random() * 256]);
+  }
+}
+
 // Gameplay
 function mousePressed() {
-  if (active) {
+  if (activeMatch.active) {
     for (let i = 0; i < GAME_WIDTH; i++) {
       if (mouseX > zoom * activeMatch.clickAreas[i] && mouseX < zoom * activeMatch.clickAreas[i + 1]) {
         let y = dropChip(i);
@@ -158,11 +181,9 @@ function winDetect(originX, originY) {
   chipsInARow = 0;
   for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentX = originX - (WIN_LENGTH - 1) + i;
-    console.log("Horiz win current X:" + currentX);
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentX >= 0 && currentX < GAME_WIDTH && activeMatch.matrix[originY][currentX] === origin) {
-      console.log("horiz win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -171,9 +192,9 @@ function winDetect(originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      console.log("horiz win");
-      endGame(origin);
-      return 0;
+      activeMatch.winner = origin;
+      activeMatch.active = false;
+      return(0);
     }
   }
 
@@ -181,10 +202,8 @@ function winDetect(originX, originY) {
   chipsInARow = 0;
   for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentY = originY - (WIN_LENGTH - 1) + i;
-    console.log("Vert win current Y:" + currentY);
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentY >= 0 && currentY < GAME_HEIGHT && activeMatch.matrix[currentY][originX] === origin) {
-      console.log("vert win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -193,8 +212,8 @@ function winDetect(originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      console.log("vert win");
-      endGame(origin);
+      activeMatch.winner = origin;
+      activeMatch.active = false;
       return 0;
     }
   }
@@ -204,13 +223,10 @@ function winDetect(originX, originY) {
   for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentX = originX - (WIN_LENGTH - 1) + i;
     let currentY = originY - (WIN_LENGTH - 1) + i;
-    console.log("Pos Diag win current X:" + currentX);
-    console.log("Pos Diag win current Y:" + currentY);
 
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentY >= 0 && currentY < GAME_HEIGHT && (currentX >= 0 && currentX < GAME_WIDTH) && activeMatch.matrix[currentY][currentX] === origin) {
-      console.log("positive slope win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -219,8 +235,8 @@ function winDetect(originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      console.log("diag win pos");
-      endGame(origin);
+      activeMatch.winner = origin;
+      activeMatch.active = false;
       return 0;
     }
   }
@@ -230,12 +246,9 @@ function winDetect(originX, originY) {
   for (let i = 0; i < WIN_LENGTH * 2 - 1; i++) {
     let currentX = originX + (WIN_LENGTH - 1) - i;
     let currentY = originY - (WIN_LENGTH - 1) + i;
-    console.log("Neg Diag win current X:" + currentX);
-    console.log("Neg Diag win current Y:" + currentY);
 
     // Add 1 to count if chip is in bounds and matching origin. Reset count otherwise.
     if (currentY >= 0 && currentY < GAME_HEIGHT && (currentX >= 0 && currentX < GAME_WIDTH) && activeMatch.matrix[currentY][currentX] === origin) {
-      console.log("diag negative slope win check chips += 1 chips:" + chipsInARow);
       chipsInARow += 1;
     }
     else {
@@ -244,8 +257,8 @@ function winDetect(originX, originY) {
 
     // If win condition is met, win.
     if (chipsInARow === WIN_LENGTH) {
-      console.log("diag win neg");
-      endGame(origin);
+      activeMatch.winner = origin;
+      activeMatch.active = false;
       return 0;
     }
   }
@@ -261,16 +274,11 @@ function winDetect(originX, originY) {
     }
   }
   if (fullRows === GAME_HEIGHT) {
-    endGame(-1);
+    activeMatch.winner = -1;
+    activeMatch.active = false;
     return 0;
   }
 
-}
-
-function endGame(the) {
-  // console.log("game ended");
-  active = false;
-  winner = the;
 }
 
 // Graphics
@@ -284,7 +292,7 @@ function displayChips() {
     y = (i + 0.5) * (BOARD.height / GAME_HEIGHT);
     for (let j = 0; j < GAME_WIDTH; j++) {
       x = (j + 0.5) * (BOARD.width / GAME_WIDTH);
-      fill(...COLOURS.chipColours[activeMatch.matrix[i][j]]);
+      fill(...colours.chipColours[activeMatch.matrix[i][j]]);
       circle(zoom * (BOARD.left + x), zoom * (BOARD.top + y), zoom * activeMatch.chipDiameter);
     }
   }
@@ -292,20 +300,20 @@ function displayChips() {
 
 function displayBoard() {
   noStroke();
-  fill(COLOURS.boardColour);
+  fill(colours.boardColour);
   rect(zoom * BOARD.left, zoom * BOARD.top, zoom * BOARD.width, zoom * BOARD.height, zoom * 10);
 }
 
 function displayWinner() {
   noStroke();
-  fill(COLOURS.backgroundColour);
-  rect(zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20, zoom * 3);
+  fill(colours.backgroundColour);
+  rect(zoom * (BOARD.left + BOARD.width / 2) - zoom * 15, zoom * (BOARD.top + BOARD.height / 2) - zoom * 10,  zoom * 30,  zoom * 20, zoom * 3);
   formatText();
-  if (winner === -1) {
+  if (activeMatch.winner === -1) {
     text("It's a Tie!", zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20);
   }
   else {
-    text("Player " + winner + " wins!", zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20);
+    text("Player " + activeMatch.winner + " wins!", zoom * BOARD.width / 2 - zoom * 15, zoom * BOARD.height / 2 - zoom * 10,  zoom * 30,  zoom * 20);
   }
 }
 
@@ -317,19 +325,12 @@ function formatText() {
   strokeWeight(3);
 }
 
-function displayGameTitle() {
-  fill(0);
-  textAlign(CENTER, CENTER);
-  textSize(zoom * 10);
-  text("Connect", zoom * BOARD.width / 2, zoom * 0.1 * BOARD.height,);
-}
-
 // Draw loop
 function draw() {
   // background(COLOURS.backgroundColour);
   displayBoard(activeMatch.matrix);
   displayChips(activeMatch.matrix);
-  if (!active && !onTitleScreen) {
+  if (!activeMatch.active && !onTitleScreen) {
     displayWinner();
   }
 }
