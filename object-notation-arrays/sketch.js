@@ -1,7 +1,7 @@
 // Object Notation and Arrays Assignment
 // Connect Something
 // Luke Pawle-Fahy
-// 3/12/2025
+// 3/19/2025
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
