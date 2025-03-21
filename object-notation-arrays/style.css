@@ -9,3 +9,8 @@ canvas {
   margin: auto;
   background-color:rgb(38, 43, 49);
 }
+
+button {
+  display: block;
+  margin: auto;
+}

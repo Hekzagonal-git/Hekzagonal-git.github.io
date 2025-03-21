@@ -39,11 +39,11 @@ function setup() {
   background(...colours.backgroundColour);
 
   let settingsButton = createButton("Change Game Settings");
-  settingsButton.position(BOARD.left + 0, zoom * (BOARD.height + BOARD.top))
+  settingsButton.position((windowWidth - zoom * BOARD.width) / 2, zoom * (BOARD.top + BOARD.height));
   settingsButton.mousePressed(changeGameValues);
 
   let resetButton = createButton("Reset Game");
-  resetButton.position(BOARD.left + settingsButton.width, zoom * (BOARD.height + BOARD.top));
+  resetButton.position(settingsButton.x + settingsButton.width);
   resetButton.mousePressed(createNewMatch);
 
   // Temporary - Match Creation
@@ -143,7 +143,7 @@ function createNecessaryChipColours() {
 function mousePressed() {
   if (activeMatch.active) {
     for (let i = 0; i < GAME_WIDTH; i++) {
-      if (mouseX > zoom * activeMatch.clickAreas[i] && mouseX < zoom * activeMatch.clickAreas[i + 1]) {
+      if (mouseX > zoom * activeMatch.clickAreas[i] && mouseX < zoom * activeMatch.clickAreas[i + 1] && mouseY < (BOARD.top + BOARD.height) * zoom) {
         let y = dropChip(i);
         if (y !== -1) {
           activeMatch.matrix[y][i] = activeMatch.turn + 1;
@@ -301,7 +301,7 @@ function displayChips() {
 function displayBoard() {
   noStroke();
   fill(colours.boardColour);
-  rect(zoom * BOARD.left, zoom * BOARD.top, zoom * BOARD.width, zoom * BOARD.height, zoom * 10);
+  rect(zoom * BOARD.left, zoom * BOARD.top, zoom * BOARD.width, zoom * BOARD.height, zoom * 10, zoom * 10, 0, 0);
 }
 
 function displayWinner() {
