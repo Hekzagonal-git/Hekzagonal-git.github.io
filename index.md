@@ -5,6 +5,8 @@
 - [Perlin Noise Demo](03-perlin)
 - [Terrain Generation](04-terrain)
 - [Bubble Object Notation](05-bubbles)
+- [2D Arrays](06-2d-arrays)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
+- [Object Notation and Arrays - Connect X](object-notation-arrays)

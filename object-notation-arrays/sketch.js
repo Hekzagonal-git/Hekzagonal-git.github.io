@@ -194,7 +194,7 @@ function winDetect(originX, originY) {
     if (chipsInARow === WIN_LENGTH) {
       activeMatch.winner = origin;
       activeMatch.active = false;
-      return(0);
+      return 0;
     }
   }
 
