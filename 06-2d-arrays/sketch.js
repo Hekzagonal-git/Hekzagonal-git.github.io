@@ -28,6 +28,23 @@ function determineCellSize() {
   }
 }
 
+function mousePressed() {
+  let x = Math.floor(mouseX / cellSize);
+  let y = Math.floor(mouseY / cellSize);
+
+  toggleCell(y, x);
+
+}
+
+function toggleCell(y, x) {
+  if (grid[y][x] === 0) {
+    grid[y][x] = 1;
+  }
+  else if (grid[y][x] === 1) {
+    grid[y][x] = 0;
+  }
+}
+
 function generateGrid(cols, rows) {
   let newGrid = [];
   for (let y = 0; y < rows; y++) {
@@ -42,6 +59,9 @@ function generateGrid(cols, rows) {
 function keyPressed() {
   if (key === 'c') {
     grid = generateGrid(GRID_WIDTH, GRID_HEIGHT);
+  }
+  else if (key === 'e') {
+    // Generate empty grid
   }
 }
 
