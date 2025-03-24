@@ -6,6 +6,8 @@
 - [Terrain Generation](04-terrain)
 - [Bubble Object Notation](05-bubbles)
 - [2D Arrays](06-2d-arrays)
+- [Grid Neighbours](07-neighbours)
+- [Rectangular Grid](08-rectangle-grid)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
