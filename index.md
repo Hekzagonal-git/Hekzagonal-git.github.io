@@ -12,3 +12,4 @@
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
 - [Object Notation and Arrays - Connect X](object-notation-arrays)
+- [Conway's Game of Life](conways-game-of-life)
