@@ -8,8 +8,9 @@
 - [2D Arrays](06-2d-arrays)
 - [Grid Neighbours](07-neighbours)
 - [Rectangular Grid](08-rectangle-grid)
+- [Game of Life](conways-game-of-life)
+- [Character Moving Demo](10-character-grid)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
 - [Object Notation and Arrays - Connect X](object-notation-arrays)
-- [Conway's Game of Life](conways-game-of-life)
