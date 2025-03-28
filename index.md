@@ -12,5 +12,6 @@
 - [Character Moving Demo](10-character-grid)
 
 # CS30 Projects
-- [Interactive Scene](interactive-scene)
+- [Interactive Scene - Really Bad Paint Program](interactive-scene)
 - [Object Notation and Arrays - Connect X](object-notation-arrays)
+- [2D Array Assignment - TBD](2d-array-assignment)
