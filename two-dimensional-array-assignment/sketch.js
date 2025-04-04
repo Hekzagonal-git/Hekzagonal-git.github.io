@@ -10,10 +10,25 @@ let tetrominoOffsetData;
 let levelGravities;
 
 class Tetromino {
-  constructor() {
+  constructor(type = "I") {
+    this.type = type,
+    this.x = 3,
+    this.y = 1,
+    this.rotation = 0;
 
+    // Applies offset to I tetromino's spawning coordinates, aligning its position with the other 6 tetrominoes.
+    if (this.type !== "I") {
+      this.x = 3,
+      this.y = 1;
+    }
+    else {
+      this.x = 2,
+      this.y = 1;
+    }
   }
-  
+  image() {
+    
+  }
 }
 
 function preload() {
