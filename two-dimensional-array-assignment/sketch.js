@@ -5,6 +5,9 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+const MATRIX_WIDTH = 10;
+const MATRIX_HEIGHT = 20;
+
 let tetrominoFigures;
 let tetrominoOffsetData;
 let levelGravities;
@@ -26,21 +29,47 @@ class Tetromino {
 
   }
 
-  image(rotationDifference) {
+  image(rotationDifference = 0) {
     return tetrominoFigures[this.type][(this.rotation + rotationDifference) % 4];
   }
 }
 
 class Tetris {
   constructor() {
+    // Stats
     this.score = 0,
     this.level = 0,
     this.linesCleared = 0,
 
+    // Tetromino Placement
     this.activePiece = null,
     this.heldPiece = null,
+    this.queue = [],
+    this.matrix = createNewMatrix(),
+    
+    // Movement
     this.holdUsed = false,
-    this.lockDelay = false
+    this.lockDelay = false,
+    this.droppingHard = false,
+    this.droppingSoft = false,
+
+    this.delayedAutoStart = false,
+    this.autoRepeat = true,
+
+
+    // 
+    this.active = true;
+  }
+
+  createNewMatrix() {
+    let newMatrix = [];
+    for (let i = 0; i < MATRIX_HEIGHT; i++) {
+      newMatrix.push([]);
+      for (let j = 0; j < MATRIX_WIDTH; i++) {
+        newMatrix[i].push(null);
+      }
+    }
+    return newMatrix;
   }
 }
 
