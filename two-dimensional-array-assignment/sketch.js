@@ -10,24 +10,37 @@ let tetrominoOffsetData;
 let levelGravities;
 
 class Tetromino {
-  constructor(type = "I") {
+  constructor(type = 0) {
     this.type = type,
-    this.x = 3,
-    this.y = 1,
     this.rotation = 0;
 
     // Applies offset to I tetromino's spawning coordinates, aligning its position with the other 6 tetrominoes.
-    if (this.type !== "I") {
+    if (this.type !== 0) {
       this.x = 3,
       this.y = 1;
     }
     else {
       this.x = 2,
-      this.y = 1;
+      this.y = 0;
     }
+
   }
-  image() {
-    
+
+  image(rotationDifference) {
+    return tetrominoFigures[this.type][(this.rotation + rotationDifference) % 4];
+  }
+}
+
+class Tetris {
+  constructor() {
+    this.score = 0,
+    this.level = 0,
+    this.linesCleared = 0,
+
+    this.activePiece = null,
+    this.heldPiece = null,
+    this.holdUsed = false,
+    this.lockDelay = false
   }
 }
 
@@ -46,4 +59,3 @@ function draw() {
 }
 
 // IJLOSTZ
-
