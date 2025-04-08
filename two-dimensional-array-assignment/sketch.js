@@ -12,6 +12,9 @@ let tetrominoFigures;
 let tetrominoOffsetData;
 let levelGravities;
 
+let tasks = [];
+// {timer = Timer(), onExpiry, ...parameters};
+
 class Tetromino {
   constructor(type = 0) {
     this.type = type,
@@ -56,7 +59,6 @@ class Tetris {
     this.delayedAutoStart = false,
     this.autoRepeat = true,
 
-
     // 
     this.active = true;
   }
@@ -85,6 +87,15 @@ function setup() {
 
 function draw() {
   background(220);
+}
+
+function checkTimers() {
+  for (let task of tasks) {
+    // In any case it should be onExpiry(..args), right? then the onExpiry function can redirect to whatever object you need. That sounds right.
+    if (task.timer.expired()) {
+      // do something
+    }
+  }
 }
 
 // IJLOSTZ

@@ -10,6 +10,8 @@
 - [Rectangular Grid](08-rectangle-grid)
 - [Game of Life](conways-game-of-life)
 - [Character Moving Demo](10-character-grid)
+- [Platformer Demo](11-platformer)
+- [Timer Library Demo](12-timer-library)
 
 # CS30 Projects
 - [Interactive Scene - Really Bad Paint Program](interactive-scene)
