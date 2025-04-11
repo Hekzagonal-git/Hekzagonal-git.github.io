@@ -12,6 +12,7 @@
 - [Character Moving Demo](10-character-grid)
 - [Platformer Demo](11-platformer)
 - [Timer Library Demo](12-timer-library)
+- [OOP Walker Demo](13-walker)
 
 # CS30 Projects
 - [Interactive Scene - Really Bad Paint Program](interactive-scene)

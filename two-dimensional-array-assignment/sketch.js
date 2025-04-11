@@ -85,42 +85,42 @@ class Tetris {
     if (this.activePiece !== null) {
       let newRotation = (this.activePiece.rotation + rotationDistance) % 4;
       switch (this.activePiece.type) {
-        case 0:
-          for (let i = 0; i < tetrominoOffsetData[1].table[0].length; i++) {
-            let offsetX = tetrominoOffsetData[1].table[this.activePiece.rotation][i][0] - tetrominoOffsetData[1].table[newRotation][i][0];
-            let offsetY = tetrominoOffsetData[1].table[this.activePiece.rotation][i][1] - tetrominoOffsetData[1].table[newRotation][i][1];
-            if (!this.intersects(this.activePiece.x + offsetX, this.activePiece.y - offsetY, newRotation, undefined)) {
-              this.activePiece.x += offsetX;
-              this.activePiece.y -= offsetY;
-              this.activePiece.rotation = newRotation
-              break;
-            }
+      case 0:
+        for (let i = 0; i < tetrominoOffsetData[1].table[0].length; i++) {
+          let offsetX = tetrominoOffsetData[1].table[this.activePiece.rotation][i][0] - tetrominoOffsetData[1].table[newRotation][i][0];
+          let offsetY = tetrominoOffsetData[1].table[this.activePiece.rotation][i][1] - tetrominoOffsetData[1].table[newRotation][i][1];
+          if (!this.intersects(this.activePiece.x + offsetX, this.activePiece.y - offsetY, newRotation, undefined)) {
+            this.activePiece.x += offsetX;
+            this.activePiece.y -= offsetY;
+            this.activePiece.rotation = newRotation;
+            break;
           }
-          break;
-        case 3:
-          for (let i = 0; i < tetrominoOffsetData[2].table[0].length; i++) {
-            let offsetX = tetrominoOffsetData[2].table[this.activePiece.rotation][i][0] - tetrominoOffsetData[2].table[newRotation][i][0];
-            let offsetY = tetrominoOffsetData[2].table[this.activePiece.rotation][i][1] - tetrominoOffsetData[2].table[newRotation][i][1];
-            if (!this.intersects(this.activePiece.x + offsetX, this.activePiece.y - offsetY, newRotation, undefined)) {
-              this.activePiece.x += offsetX;
-              this.activePiece.y -= offsetY;
-              this.activePiece.rotation = newRotation
-              break;
-            }
+        }
+        break;
+      case 3:
+        for (let i = 0; i < tetrominoOffsetData[2].table[0].length; i++) {
+          let offsetX = tetrominoOffsetData[2].table[this.activePiece.rotation][i][0] - tetrominoOffsetData[2].table[newRotation][i][0];
+          let offsetY = tetrominoOffsetData[2].table[this.activePiece.rotation][i][1] - tetrominoOffsetData[2].table[newRotation][i][1];
+          if (!this.intersects(this.activePiece.x + offsetX, this.activePiece.y - offsetY, newRotation, undefined)) {
+            this.activePiece.x += offsetX;
+            this.activePiece.y -= offsetY;
+            this.activePiece.rotation = newRotation;
+            break;
           }
-          break;
-        default:
-          for (let i = 0; i < tetrominoOffsetData[0].table[0].length; i++) {
-            let offsetX = tetrominoOffsetData[0].table[this.activePiece.rotation][i][0] - tetrominoOffsetData[0].table[newRotation][i][0];
-            let offsetY = tetrominoOffsetData[0].table[this.activePiece.rotation][i][1] - tetrominoOffsetData[0].table[newRotation][i][1];
-            if (!this.intersects(this.activePiece.x + offsetX, this.activePiece.y - offsetY, newRotation, undefined)) {
-              this.activePiece.x += offsetX;
-              this.activePiece.y -= offsetY;
-              this.activePiece.rotation = newRotation
-              break;
-            }
+        }
+        break;
+      default:
+        for (let i = 0; i < tetrominoOffsetData[0].table[0].length; i++) {
+          let offsetX = tetrominoOffsetData[0].table[this.activePiece.rotation][i][0] - tetrominoOffsetData[0].table[newRotation][i][0];
+          let offsetY = tetrominoOffsetData[0].table[this.activePiece.rotation][i][1] - tetrominoOffsetData[0].table[newRotation][i][1];
+          if (!this.intersects(this.activePiece.x + offsetX, this.activePiece.y - offsetY, newRotation, undefined)) {
+            this.activePiece.x += offsetX;
+            this.activePiece.y -= offsetY;
+            this.activePiece.rotation = newRotation;
+            break;
           }
-          break;
+        }
+        break;
       }
     }
     else {
@@ -220,7 +220,7 @@ class Tetris {
 
   // Conditionals
   shouldPlaceTetromino() {
-    return (this.droppingHard || this.moveResetCounter >= 15);
+    return this.droppingHard || this.moveResetCounter >= 15;
   }
 
   intersects(x = this.activePiece.x, y = this.activePiece.y, rotation = this.activePiece.rotation, type = this.activePiece.type) {
@@ -263,7 +263,7 @@ function checkTimers() {
   for (let task of tasks) {
     // In any case it should be onExpiry(..args), right? then the onExpiry function can redirect to whatever object you need. That sounds right.
     if (task.timer.expired()) {
-      task.onExpiry(...task.args)
+      task.onExpiry(...task.args);
     }
   }
 }
