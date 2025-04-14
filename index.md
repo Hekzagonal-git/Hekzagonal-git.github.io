@@ -13,6 +13,7 @@
 - [Platformer Demo](11-platformer)
 - [Timer Library Demo](12-timer-library)
 - [OOP Walker Demo](13-walker)
+- [Fireworks OOP](14-fireworks)
 
 # CS30 Projects
 - [Interactive Scene - Really Bad Paint Program](interactive-scene)
