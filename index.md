@@ -14,6 +14,7 @@
 - [Timer Library Demo](12-timer-library)
 - [OOP Walker Demo](13-walker)
 - [Fireworks OOP](14-fireworks)
+- [Connected Nodes OOP](15-connected-nodes)
 
 # CS30 Projects
 - [Interactive Scene - Really Bad Paint Program](interactive-scene)
