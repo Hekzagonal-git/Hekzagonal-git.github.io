@@ -16,6 +16,7 @@
 - [Fireworks OOP](14-fireworks)
 - [Connected Nodes OOP](15-connected-nodes)
 - [Local Storage](16-local-storage)
+- [2D Collision Demo](17-2d-collide)
 
 # CS30 Projects
 - [Interactive Scene - Really Bad Paint Program](interactive-scene)
