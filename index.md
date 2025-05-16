@@ -17,6 +17,7 @@
 - [Connected Nodes OOP](15-connected-nodes)
 - [Local Storage](16-local-storage)
 - [2D Collision Demo](17-2d-collide)
+- [Object Inheritance Demo](18-object-inheritance)
 
 # CS30 Projects
 - [Interactive Scene - Really Bad Paint Program](interactive-scene)
